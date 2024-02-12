@@ -19,7 +19,7 @@ services:
     depends_on:
       - postgres
   postgres:
-    image: postgres
+    image: postgres:15
     restart: always
     environment:
       POSTGRES_USER: user
@@ -29,6 +29,6 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./accounts.sql:/docker-entrypoint-initdb.d/accounts.sql
-      - ./shop.sql:/docker-entrypoint-initdb.d/shop.sql
-      - ./order.sql:/docker-entrypoint-initdb.d/order.sql
+      - ./db/accounts.sql:/docker-entrypoint-initdb.d/accounts.sql
+      - ./db/shop.sql:/docker-entrypoint-initdb.d/shop.sql
+      - ./db/order.sql:/docker-entrypoint-initdb.d/order.sql
