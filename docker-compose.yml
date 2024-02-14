@@ -23,9 +23,3 @@ services:
       context: ./nginx
     ports:
       - "7777:7777"
-
-  haproxy:
-    build:
-      context: ./haproxy
-    ports:
-      - "9999:80"
