@@ -4,21 +4,15 @@
 Write a simple Microservice with 3 services: 1. Accounts 2. Shop 3. Order
 
 ### Accounts
-    Login -> username, password => token
     Signup -> username, password
-    Logout -> delete token
-    CheckToken -> token => user
+    Login  -> username, password
 ### Shop
     Add to Cart
     Get Items
-    Item Detail
     Remove from Cart
-    Add Order -> Finalize Cart
-    Pay Order
 ### Order
-AddOrder
-GetOrders
-GetOrderDetail
+    AddOrder
+    GetOrders
 
 
 ## Step 2
@@ -28,9 +22,9 @@ Dockerize all microservices and Deploy them with docker-compose.
 Deploy an nginx with 3 replicas and an HAProxy that load balances between these 3 replicas.
 Nginx routes should be like the below:
 
-domain.com/accounts -> accounts_microservice
-domain.com/shop -> shop_microservice
-domain.com/order -> order_microservice
+localhost:7777/accounts -> accounts_microservice
+localhost:7777/shop -> shop_microservice
+localhost:7777/order -> order_microservice
 
 ------
 # Solution

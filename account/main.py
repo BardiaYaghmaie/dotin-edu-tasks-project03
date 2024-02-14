@@ -1,44 +1,34 @@
-from fastapi import FastAPI, HTTPException, Depends
+# accounts_microservice/main.py
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import asyncpg
 
 app = FastAPI()
 
-# Database connection pool
-DATABASE_URL = "postgresql://user:password@postgres/accounts"
-pool = None
+# In-memory database (for demonstration purposes)
+users_db = {}
 
-# Models
-class User(BaseModel):
+class UserSignup(BaseModel):
     username: str
     password: str
 
-# Dependency to get a database connection from the pool
-async def get_connection():
-    global pool
-    if pool is None:
-        pool = await asyncpg.create_pool(DATABASE_URL)
-    async with pool.acquire() as connection:
-        yield connection
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
-# Routes
-@app.post('/signup')
-async def signup(user: User, connection = Depends(get_connection)):
-    try:
-        await connection.execute("INSERT INTO users (username, password) VALUES ($1, $2)", user.username, user.password)
-        return {"message": "User created successfully"}
-    except asyncpg.exceptions.UniqueViolationError:
+@app.post("/signup")
+def signup(user_data: UserSignup):
+    username = user_data.username
+    if username in users_db:
         raise HTTPException(status_code=400, detail="Username already exists")
+    users_db[username] = user_data.password
+    return {"message": f"User {username} registered successfully"}
 
-@app.post('/login')
-async def login(user: User, connection = Depends(get_connection)):
-    record = await connection.fetchrow("SELECT password FROM users WHERE username = $1", user.username)
-    if record is None or record['password'] != user.password:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+@app.post("/login")
+def login(user_data: UserLogin):
+    username = user_data.username
+    password = user_data.password
+    stored_password = users_db.get(username)
+    if stored_password != password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return {"message": f"Welcome back, {username}"}
 
-    return {"token": "exampletoken"}  # Generate and return token
-
-# Start app
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)

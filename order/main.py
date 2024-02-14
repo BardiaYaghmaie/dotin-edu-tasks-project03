@@ -1,37 +1,33 @@
-from fastapi import FastAPI, Depends
-import asyncpg
+# accounts_microservice/main.py
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 app = FastAPI()
 
-# Database connection pool
-DATABASE_URL = "postgresql://user:password@postgres/order"
-pool = None
+# In-memory database (for demonstration purposes)
+users_db = {}
 
-# Dependency to get a database connection from the pool
-async def get_connection():
-    global pool
-    if pool is None:
-        pool = await asyncpg.create_pool(DATABASE_URL)
-    async with pool.acquire() as connection:
-        yield connection
+class UserSignup(BaseModel):
+    username: str
+    password: str
 
-# Routes
-@app.post('/add-order')
-async def add_order(connection = Depends(get_connection)):
-    # Dummy implementation, not handling order creation
-    return {"message": "Order added successfully"}
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
-@app.get('/orders')
-async def get_orders(connection = Depends(get_connection)):
-    # Dummy implementation, not retrieving orders from database
-    return [{"id": "exampleorderid", "items": [{"item_id": "exampleitemid", "quantity": 2}]}]
+@app.post("/signupee")
+def signup(user_data: UserSignup):
+    username = user_data.username
+    if username in users_db:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    users_db[username] = user_data.password
+    return {"message": f"User {username} registered successfully"}
 
-@app.get('/orders/{order_id}')
-async def get_order_detail(order_id: str, connection = Depends(get_connection)):
-    # Dummy implementation, not retrieving order detail from database
-    return {"id": order_id, "items": [{"item_id": "exampleitemid", "quantity": 2}]}
-
-# Start app
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8003)
+@app.post("/loginee")
+def login(user_data: UserLogin):
+    username = user_data.username
+    password = user_data.password
+    stored_password = users_db.get(username)
+    if stored_password != password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return {"message": f"Welcome back, {username}"}

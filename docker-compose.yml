@@ -1,34 +1,31 @@
 version: '3'
 services:
   accounts:
-    build: ./accounts
+    build:
+      context: ./account
     ports:
-      - "8001:8001"
-    depends_on:
-      - postgres
+      - "8000:80"
+    container_name: account
   shop:
-    build: ./shop
+    build:
+      context: ./shop
     ports:
-      - "8002:8002"
-    depends_on:
-      - postgres
+      - "8001:80"
+    container_name: shop
   order:
-    build: ./order
+    build:
+      context: ./order
     ports:
-      - "8003:8003"
-    depends_on:
-      - postgres
-  postgres:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: accounts
-      POSTGRES_HOST_AUTH_METHOD: trust
+      - "8002:80"
+    container_name: order
+  nginx:
+    build:
+      context: ./nginx
     ports:
-      - "5432:5432"
-    volumes:
-      - ./db/accounts.sql:/docker-entrypoint-initdb.d/accounts.sql
-      - ./db/shop.sql:/docker-entrypoint-initdb.d/shop.sql
-      - ./db/order.sql:/docker-entrypoint-initdb.d/order.sql
+      - "7777:7777"
+
+  haproxy:
+    build:
+      context: ./haproxy
+    ports:
+      - "9999:80"
