@@ -53,4 +53,83 @@ EXPOSE 80
 CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "80"]
 ```
 
-2- Install NginxProxyManager
+2- Configure Nginx 
+```pr03.conf
+server {
+    listen 0.0.0.0:7777;
+    server_name localhost;
+
+    location /account {
+        proxy_pass http://199.20.45.10:80;  
+    }
+
+    location /shop {
+        proxy_pass  http://199.20.45.11:80;  
+    }
+
+    location /order {
+        proxy_pass  http://199.20.45.12:80; 
+    }
+}
+
+
+```
+```Dockerfile
+# Dockerfile for Nginx
+FROM nginx:alpine
+
+# Copy your custom Nginx configuration file into the container
+COPY pr03.conf /etc/nginx/conf.d/default.conf
+
+```
+
+3- Write docker compose file and configure networking.
+```docker-compose.yml
+version: '3'
+services:
+  accounts:
+    build:
+      context: ./account
+    ports:
+      - "8000:80"
+    container_name: account
+    hostname: account
+    networks:
+      pr03:
+        ipv4_address: 199.20.45.10
+  shop:
+    build:
+      context: ./shop
+    ports:
+      - "8001:80"
+    container_name: shop
+    hostname: shop
+    networks:
+      pr03:
+        ipv4_address: 199.20.45.11
+  order:
+    build:
+      context: ./order
+    ports:
+      - "8002:80"
+    container_name: order
+    hostname: order
+    networks:
+      pr03:
+        ipv4_address: 199.20.45.12
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "7777:7777"
+    networks:
+      - pr03
+
+networks:
+  pr03:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 199.20.45.0/24
+         gateway: 199.20.45.1
+```

@@ -6,20 +6,42 @@ services:
     ports:
       - "8000:80"
     container_name: account
+    hostname: account
+    networks:
+      pr03:
+        ipv4_address: 199.20.45.10
   shop:
     build:
       context: ./shop
     ports:
       - "8001:80"
     container_name: shop
+    hostname: shop
+    networks:
+      pr03:
+        ipv4_address: 199.20.45.11
   order:
     build:
       context: ./order
     ports:
       - "8002:80"
     container_name: order
+    hostname: order
+    networks:
+      pr03:
+        ipv4_address: 199.20.45.12
   nginx:
     build:
       context: ./nginx
     ports:
       - "7777:7777"
+    networks:
+      - pr03
+
+networks:
+  pr03:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 199.20.45.0/24
+         gateway: 199.20.45.1
