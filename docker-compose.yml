@@ -33,10 +33,22 @@ services:
   nginx:
     build:
       context: ./nginx
-    ports:
-      - "7777:7777"
+    #ports:
+      #- "7777:7777"
     networks:
       - pr03
+    #container_name: pr03-nginx
+    deploy:
+      replicas: 3
+
+  haproxy:
+    build:
+      context: ./haproxy
+    ports:
+      - "7777:80"
+    networks:
+      - pr03
+ 
 
 networks:
   pr03:
