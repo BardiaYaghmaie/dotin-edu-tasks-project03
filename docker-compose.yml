@@ -47,6 +47,7 @@ services:
       context: ./haproxy
     ports:
       - "7777:80"
+      - "8404:8404"
     networks:
       pr03:
         ipv4_address: 199.20.45.30
