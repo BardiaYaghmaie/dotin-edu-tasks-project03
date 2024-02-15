@@ -33,13 +33,14 @@ services:
   nginx:
     build:
       context: ./nginx
-    #ports:
-      #- "7777:7777"
+    ports:
+      - "9999:80"
     networks:
-      - pr03
-    #container_name: pr03-nginx
-    deploy:
-      replicas: 3
+      pr03:
+        ipv4_address: 199.20.45.20
+    container_name: pr03-nginx
+    # deploy:
+    #   replicas: 3
 
   haproxy:
     build:
@@ -47,7 +48,8 @@ services:
     ports:
       - "7777:80"
     networks:
-      - pr03
+      pr03:
+        ipv4_address: 199.20.45.30
  
 
 networks:
