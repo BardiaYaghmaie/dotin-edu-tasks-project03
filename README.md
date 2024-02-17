@@ -29,6 +29,11 @@ localhost:7777/order -> order_microservice
 ------
 # Solution
 
+## Step1
+Design and program the microservices :) (solution details are not important cause we want to put focus on DevOps stuff...)
+
+## Step2
+
 1- Write each service and create a Dockerfile for it
 ```
 # Use the official Python base image
@@ -52,6 +57,7 @@ EXPOSE 80
 # Start the FastAPI application
 CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "80"]
 ```
+## Step3
 
 2- Configure Nginx 
 ```pr03.conf
