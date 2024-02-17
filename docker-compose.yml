@@ -5,7 +5,7 @@ services:
       context: ./account
     ports:
       - "8000:80"
-    container_name: account
+    container_name: pr03-account
     hostname: account
     networks:
       pr03:
@@ -15,7 +15,7 @@ services:
       context: ./shop
     ports:
       - "8001:80"
-    container_name: shop
+    container_name: pr03-shop
     hostname: shop
     networks:
       pr03:
@@ -25,7 +25,7 @@ services:
       context: ./order
     ports:
       - "8002:80"
-    container_name: order
+    container_name: pr03-order
     hostname: order
     networks:
       pr03:
@@ -51,6 +51,8 @@ services:
     networks:
       pr03:
         ipv4_address: 199.20.45.30
+    container_name: pr03-haproxy
+
  
 
 networks:
