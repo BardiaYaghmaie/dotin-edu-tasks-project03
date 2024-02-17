@@ -60,15 +60,15 @@ server {
     server_name localhost;
 
     location /account {
-        proxy_pass http://199.20.45.10:80;  
+        proxy_pass http://198.20.45.10:80;  
     }
 
     location /shop {
-        proxy_pass  http://199.20.45.11:80;  
+        proxy_pass  http://198.20.45.11:80;  
     }
 
     location /order {
-        proxy_pass  http://199.20.45.12:80; 
+        proxy_pass  http://198.20.45.12:80; 
     }
 }
 
@@ -96,7 +96,7 @@ services:
     hostname: account
     networks:
       pr03:
-        ipv4_address: 199.20.45.10
+        ipv4_address: 198.20.45.10
   shop:
     build:
       context: ./shop
@@ -106,7 +106,7 @@ services:
     hostname: shop
     networks:
       pr03:
-        ipv4_address: 199.20.45.11
+        ipv4_address: 198.20.45.11
   order:
     build:
       context: ./order
@@ -116,7 +116,7 @@ services:
     hostname: order
     networks:
       pr03:
-        ipv4_address: 199.20.45.12
+        ipv4_address: 198.20.45.12
   nginx:
     build:
       context: ./nginx
@@ -130,8 +130,8 @@ networks:
     driver: bridge
     ipam:
      config:
-       - subnet: 199.20.45.0/24
-         gateway: 199.20.45.1
+       - subnet: 198.20.45.0/24
+         gateway: 198.20.45.1
 ```
 
 4- Create an haproxy directory, configure haproxy.cfg and integrate in your compose
@@ -152,9 +152,9 @@ frontend http-in
 
 backend nginx-backend
     balance roundrobin
-    server nginx1 199.20.45.20:80 check
-    server nginx2 199.20.45.20:80 check
-    server nginx3 199.20.45.20:80 check
+    server nginx1 198.20.45.20:80 check
+    server nginx2 198.20.45.20:80 check
+    server nginx3 198.20.45.20:80 check
 
 ```
 
@@ -170,7 +170,7 @@ backend nginx-backend
       - "8404:8404"
     networks:
       pr03:
-        ipv4_address: 199.20.45.30
+        ipv4_address: 198.20.45.30
 .
 .
 .
