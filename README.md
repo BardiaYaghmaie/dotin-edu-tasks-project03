@@ -133,3 +133,47 @@ networks:
        - subnet: 199.20.45.0/24
          gateway: 199.20.45.1
 ```
+
+4- Create an haproxy directory, configure haproxy.cfg and integrate in your compose
+```haproxy.cfg
+global
+    daemon
+    maxconn 256
+
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+
+frontend http-in
+    bind *:80
+    default_backend nginx-backend
+
+backend nginx-backend
+    balance roundrobin
+    server nginx1 199.20.45.20:80 check
+    server nginx2 199.20.45.20:80 check
+    server nginx3 199.20.45.20:80 check
+
+```
+
+```docker-compose.yml
+.
+.
+.
+ haproxy:
+    build:
+      context: ./haproxy
+    ports:
+      - "7777:80"
+      - "8404:8404"
+    networks:
+      pr03:
+        ipv4_address: 199.20.45.30
+.
+.
+.
+```
+
+5- Access services via ```localhost:7777/[order][shop][account]```

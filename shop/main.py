@@ -15,7 +15,7 @@ class UserLogin(BaseModel):
     username: str
     password: str
 
-@app.post("/signupoo")
+@app.post("/AddToCart")
 def signup(user_data: UserSignup):
     username = user_data.username
     if username in users_db:
@@ -23,7 +23,7 @@ def signup(user_data: UserSignup):
     users_db[username] = user_data.password
     return {"message": f"User {username} registered successfully"}
 
-@app.post("/loginoo")
+@app.post("/GetItems")
 def login(user_data: UserLogin):
     username = user_data.username
     password = user_data.password
